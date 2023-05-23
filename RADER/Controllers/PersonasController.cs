@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RADER.Models;
+using RADER.ModelsViews;
 
 namespace RADER.Controllers
 {
@@ -22,9 +23,20 @@ namespace RADER.Controllers
 
         // GET: api/Personas
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Persona>>> GetPersonas()
+        public async Task<ActionResult<IEnumerable<PersonaMV>>> GetPersonas()
         {
-            return await _context.Personas.ToListAsync();
+            var query = from per in _context.Personas
+                        select new PersonaMV
+                        {
+                            IdPersona = per.IdPersona,
+                            NombreP = per.NombreP,     
+                            ApellidoP = per.ApellidoP,
+                            DireccionP = per.DireccionP,
+                            TelefonoP= per.TelefonoP,
+                            CorreoP= per.CorreoP,
+
+};
+            return await query.ToListAsync();
         }
 
         // GET: api/Personas/5

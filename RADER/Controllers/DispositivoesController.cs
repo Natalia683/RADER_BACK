@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RADER.Models;
+using RADER.ModelsViews;
 
 namespace RADER.Controllers
 {
@@ -22,9 +23,24 @@ namespace RADER.Controllers
 
         // GET: api/Dispositivoes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Dispositivo>>> GetDispositivos()
+        public async Task<ActionResult<IEnumerable<DispositivosMV>>> GetDispositivos()
         {
-            return await _context.Dispositivos.ToListAsync();
+
+            var query = from dis in _context.Dispositivos
+                        join emp in _context.Empresas on dis.EmpresaD equals emp.IdEmpresa
+                        select new DispositivosMV
+                        {
+                            IdDispositivo = dis.IdDispositivo,
+                            NombreD = dis.NombreD,
+                            LargoD = dis.LargoD,
+                            AltoD = dis.AltoD,
+                            AnchoD = dis.AnchoD,
+                            PesoD = dis.PesoD,
+                            EmpresaD = dis.EmpresaD,
+                            NombreE = emp.NombreE,
+                            NitE = emp.NitE,
+                        };
+            return await query.ToListAsync();
         }
 
         // GET: api/Dispositivoes/5

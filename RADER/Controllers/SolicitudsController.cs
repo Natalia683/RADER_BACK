@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RADER.Models;
+using RADER.ModelsViews;
 
 namespace RADER.Controllers
 {
@@ -22,9 +18,25 @@ namespace RADER.Controllers
 
         // GET: api/Solicituds
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Solicitud>>> GetSolicituds()
+        public async Task<ActionResult<IEnumerable<SolicitudMV>>> GetSolicituds()
         {
-            return await _context.Solicituds.ToListAsync();
+            var query = from sol in _context.Solicituds
+                        join usu in _context.Usuarios on sol.UsuarioS equals usu.IdUsuario
+                        join dis in _context.Dispositivos on sol.DispositivoS equals dis.IdDispositivo
+                        select new SolicitudMV
+                        {
+                            IdSolicitud = sol.IdSolicitud,
+                            TipoS = sol.TipoS,
+                            DescripcionS = sol.DescripcionS,
+                            UsuarioS = usu.IdUsuario,
+                            NombreU = usu.NombreU,
+                            DispositivoS = dis.IdDispositivo,
+                            NombreD = dis.NombreD,
+
+
+                        };
+
+            return await query.ToListAsync();
         }
 
         // GET: api/Solicituds/5

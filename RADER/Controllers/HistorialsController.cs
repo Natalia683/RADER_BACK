@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RADER.Models;
+using RADER.ModelsViews;
 
 namespace RADER.Controllers
 {
@@ -22,9 +23,25 @@ namespace RADER.Controllers
 
         // GET: api/Historials
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Historial>>> GetHistorials()
-        {
-            return await _context.Historials.ToListAsync();
+        public async Task<ActionResult<IEnumerable<HistorialMV>>> GetHistorials()
+        { var query = from his in _context.Historials
+                      join usu in _context.Usuarios on his.UsuarioH equals usu.IdUsuario
+                      join com in _context.Componentes on his.ComponenteH equals com.IdComponente
+                      select new HistorialMV
+                      {
+                          IdHistorial= his.IdHistorial, 
+                          FechaH= his.FechaH, 
+                          NovedadH= his.NovedadH,
+                          SugerenciaUsuarioH= his.SugerenciaUsuarioH, 
+                          IncidenciasH= his.IncidenciasH,
+                          ComponenteH= com.IdComponente, 
+                          NombreC=com.NombreC, 
+                          UsuarioH=usu.IdUsuario, 
+                          NombreU =usu.NombreU,
+
+    };
+
+            return await query.ToArrayAsync();
         }
 
         // GET: api/Historials/5

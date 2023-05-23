@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RADER.Models;
+using RADER.ModelsViews;
 
 namespace RADER.Controllers
 {
@@ -22,9 +24,30 @@ namespace RADER.Controllers
 
         // GET: api/Inventarios
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Inventario>>> GetInventarios()
+        public async Task<ActionResult<IEnumerable<InventarioMV>>> GetInventarios()
         {
-            return await _context.Inventarios.ToListAsync();
+
+            var query = from inv in _context.Inventarios
+                        join pro in _context.Proveedors on inv.ProveedorI equals pro.IdProveedor
+                        join com in _context.Componentes on inv.ComponenteI equals com.IdComponente
+                        select new InventarioMV
+                        {
+
+
+                            IdInventario = inv.IdInventario,
+                            DescripcionI = inv.DescripcionI,
+                            CantidadI = inv.CantidadI,
+                            ProveedorI = pro.IdProveedor,
+                            NombreP = pro.NombreP,
+                            ComponenteI = com.IdComponente,
+                            NombreC = com.NombreC,
+                            EstadoI = inv.EstadoI
+
+
+
+
+                        };
+            return await query.ToListAsync();
         }
 
         // GET: api/Inventarios/5

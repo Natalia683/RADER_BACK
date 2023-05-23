@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RADER.Models;
+using RADER.ModelsViews;
 
 namespace RADER.Controllers
 {
@@ -22,9 +23,33 @@ namespace RADER.Controllers
 
         // GET: api/Mantenimientoes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Mantenimiento>>> GetMantenimientos()
+        public async Task<ActionResult<IEnumerable<MantenimientoMV>>> GetMantenimientos()
         {
-            return await _context.Mantenimientos.ToListAsync();
+
+            var query = from man in _context.Mantenimientos
+                        join enc in _context.Encargados on man.EncargadoM equals enc.IdEncargado
+                        join dis in _context.Dispositivos on man.DispositivoM equals dis.IdDispositivo
+                        select new MantenimientoMV
+                       {
+                         IdMantenimiento=man.IdMantenimiento,   
+
+                         EstadoM=man.EstadoM,
+
+                         FechaRevisionM=man.FechaRevisionM,
+
+                         DescripcionM= man.DescripcionM,
+
+                         EncargadoM=enc.PersonaEnc,
+
+                         DispositivoM=dis.IdDispositivo,
+
+                         NombreD=dis.NombreD,
+
+
+
+
+    }; 
+            return await query.ToListAsync();
         }
 
         // GET: api/Mantenimientoes/5
