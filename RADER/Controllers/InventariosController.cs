@@ -35,10 +35,10 @@ namespace RADER.Controllers
 
 
                             IdInventario = inv.IdInventario,
-                            DescripcionI = inv.DescripcionI,
-                            CantidadI = inv.CantidadI,
-                            ProveedorI = pro.IdProveedor,
-                            NombreP = pro.NombreP,
+                            Descripcion = inv.DescripcionI,
+                            Cantidad = inv.CantidadI,
+                            Proveedor = pro.IdProveedor,
+                            Nombre_Proveedor = pro.NombreP,
                             ComponenteI = com.IdComponente,
                             NombreC = com.NombreC,
                             EstadoI = inv.EstadoI
