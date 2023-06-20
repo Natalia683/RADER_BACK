@@ -15,6 +15,8 @@ public partial class Encargado
 
     public int? PersonaEnc { get; set; }
 
+    public bool? Estado { get; set; }
+
     public virtual ICollection<Mantenimiento> Mantenimientos { get; } = new List<Mantenimiento>();
 
     public virtual Persona? PersonaEncNavigation { get; set; }

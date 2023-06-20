@@ -21,6 +21,8 @@ public partial class Empresa
 
     public DateTime? FechaVinculacionE { get; set; }
 
+    public bool? Estado { get; set; }
+
     public virtual ICollection<Dispositivo> Dispositivos { get; } = new List<Dispositivo>();
 
     public virtual Persona? PersonaENavigation { get; set; }

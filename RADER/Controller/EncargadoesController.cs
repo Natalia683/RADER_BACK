@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RADER.Models;
 
-namespace RADER.Controllers
+namespace RADER.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -24,6 +24,10 @@ namespace RADER.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Encargado>>> GetEncargados()
         {
+          if (_context.Encargados == null)
+          {
+              return NotFound();
+          }
             return await _context.Encargados.ToListAsync();
         }
 
@@ -31,6 +35,10 @@ namespace RADER.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Encargado>> GetEncargado(int id)
         {
+          if (_context.Encargados == null)
+          {
+              return NotFound();
+          }
             var encargado = await _context.Encargados.FindAsync(id);
 
             if (encargado == null)
@@ -77,22 +85,12 @@ namespace RADER.Controllers
         [HttpPost]
         public async Task<ActionResult<Encargado>> PostEncargado(Encargado encargado)
         {
+          if (_context.Encargados == null)
+          {
+              return Problem("Entity set 'RaderContext.Encargados'  is null.");
+          }
             _context.Encargados.Add(encargado);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (EncargadoExists(encargado.IdEncargado))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetEncargado", new { id = encargado.IdEncargado }, encargado);
         }
@@ -101,6 +99,10 @@ namespace RADER.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEncargado(int id)
         {
+            if (_context.Encargados == null)
+            {
+                return NotFound();
+            }
             var encargado = await _context.Encargados.FindAsync(id);
             if (encargado == null)
             {
@@ -115,7 +117,7 @@ namespace RADER.Controllers
 
         private bool EncargadoExists(int id)
         {
-            return _context.Encargados.Any(e => e.IdEncargado == id);
+            return (_context.Encargados?.Any(e => e.IdEncargado == id)).GetValueOrDefault();
         }
     }
 }

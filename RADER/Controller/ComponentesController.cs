@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RADER.Models;
 
-namespace RADER.Controllers
+namespace RADER.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -24,6 +24,10 @@ namespace RADER.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Componente>>> GetComponentes()
         {
+          if (_context.Componentes == null)
+          {
+              return NotFound();
+          }
             return await _context.Componentes.ToListAsync();
         }
 
@@ -31,6 +35,10 @@ namespace RADER.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Componente>> GetComponente(int id)
         {
+          if (_context.Componentes == null)
+          {
+              return NotFound();
+          }
             var componente = await _context.Componentes.FindAsync(id);
 
             if (componente == null)
@@ -77,22 +85,12 @@ namespace RADER.Controllers
         [HttpPost]
         public async Task<ActionResult<Componente>> PostComponente(Componente componente)
         {
+          if (_context.Componentes == null)
+          {
+              return Problem("Entity set 'RaderContext.Componentes'  is null.");
+          }
             _context.Componentes.Add(componente);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (ComponenteExists(componente.IdComponente))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetComponente", new { id = componente.IdComponente }, componente);
         }
@@ -101,6 +99,10 @@ namespace RADER.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteComponente(int id)
         {
+            if (_context.Componentes == null)
+            {
+                return NotFound();
+            }
             var componente = await _context.Componentes.FindAsync(id);
             if (componente == null)
             {
@@ -115,7 +117,7 @@ namespace RADER.Controllers
 
         private bool ComponenteExists(int id)
         {
-            return _context.Componentes.Any(e => e.IdComponente == id);
+            return (_context.Componentes?.Any(e => e.IdComponente == id)).GetValueOrDefault();
         }
     }
 }

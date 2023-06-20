@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RADER.Models;
 using RADER.ModelsViews;
 
-namespace RADER.Controllers
+namespace RADER.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -41,7 +40,7 @@ namespace RADER.Controllers
                             Nombre_Proveedor = pro.NombreP,
                             ComponenteI = com.IdComponente,
                             NombreC = com.NombreC,
-                            EstadoI = inv.EstadoI
+                            
 
 
 
@@ -50,10 +49,15 @@ namespace RADER.Controllers
             return await query.ToListAsync();
         }
 
+
         // GET: api/Inventarios/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Inventario>> GetInventario(int id)
         {
+          if (_context.Inventarios == null)
+          {
+              return NotFound();
+          }
             var inventario = await _context.Inventarios.FindAsync(id);
 
             if (inventario == null)
@@ -100,22 +104,12 @@ namespace RADER.Controllers
         [HttpPost]
         public async Task<ActionResult<Inventario>> PostInventario(Inventario inventario)
         {
+          if (_context.Inventarios == null)
+          {
+              return Problem("Entity set 'RaderContext.Inventarios'  is null.");
+          }
             _context.Inventarios.Add(inventario);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (InventarioExists(inventario.IdInventario))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetInventario", new { id = inventario.IdInventario }, inventario);
         }
@@ -124,6 +118,10 @@ namespace RADER.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteInventario(int id)
         {
+            if (_context.Inventarios == null)
+            {
+                return NotFound();
+            }
             var inventario = await _context.Inventarios.FindAsync(id);
             if (inventario == null)
             {
@@ -138,7 +136,7 @@ namespace RADER.Controllers
 
         private bool InventarioExists(int id)
         {
-            return _context.Inventarios.Any(e => e.IdInventario == id);
+            return (_context.Inventarios?.Any(e => e.IdInventario == id)).GetValueOrDefault();
         }
     }
 }

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RADER.Models;
 
-namespace RADER.Controllers
+namespace RADER.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -24,6 +24,10 @@ namespace RADER.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Permiso>>> GetPermisos()
         {
+          if (_context.Permisos == null)
+          {
+              return NotFound();
+          }
             return await _context.Permisos.ToListAsync();
         }
 
@@ -31,6 +35,10 @@ namespace RADER.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Permiso>> GetPermiso(int id)
         {
+          if (_context.Permisos == null)
+          {
+              return NotFound();
+          }
             var permiso = await _context.Permisos.FindAsync(id);
 
             if (permiso == null)
@@ -77,6 +85,10 @@ namespace RADER.Controllers
         [HttpPost]
         public async Task<ActionResult<Permiso>> PostPermiso(Permiso permiso)
         {
+          if (_context.Permisos == null)
+          {
+              return Problem("Entity set 'RaderContext.Permisos'  is null.");
+          }
             _context.Permisos.Add(permiso);
             try
             {
@@ -101,6 +113,10 @@ namespace RADER.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePermiso(int id)
         {
+            if (_context.Permisos == null)
+            {
+                return NotFound();
+            }
             var permiso = await _context.Permisos.FindAsync(id);
             if (permiso == null)
             {
@@ -115,7 +131,7 @@ namespace RADER.Controllers
 
         private bool PermisoExists(int id)
         {
-            return _context.Permisos.Any(e => e.IdPermiso == id);
+            return (_context.Permisos?.Any(e => e.IdPermiso == id)).GetValueOrDefault();
         }
     }
 }

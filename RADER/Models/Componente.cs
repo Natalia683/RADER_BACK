@@ -19,6 +19,8 @@ public partial class Componente
 
     public int? DispositivoC { get; set; }
 
+    public bool? Estado { get; set; }
+
     public virtual Dispositivo? DispositivoCNavigation { get; set; }
 
     public virtual ICollection<Historial> Historials { get; } = new List<Historial>();

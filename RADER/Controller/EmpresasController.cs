@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RADER.Models;
 
-namespace RADER.Controllers
+namespace RADER.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -24,6 +24,10 @@ namespace RADER.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Empresa>>> GetEmpresas()
         {
+          if (_context.Empresas == null)
+          {
+              return NotFound();
+          }
             return await _context.Empresas.ToListAsync();
         }
 
@@ -31,6 +35,10 @@ namespace RADER.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Empresa>> GetEmpresa(int id)
         {
+          if (_context.Empresas == null)
+          {
+              return NotFound();
+          }
             var empresa = await _context.Empresas.FindAsync(id);
 
             if (empresa == null)
@@ -77,22 +85,12 @@ namespace RADER.Controllers
         [HttpPost]
         public async Task<ActionResult<Empresa>> PostEmpresa(Empresa empresa)
         {
+          if (_context.Empresas == null)
+          {
+              return Problem("Entity set 'RaderContext.Empresas'  is null.");
+          }
             _context.Empresas.Add(empresa);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (EmpresaExists(empresa.IdEmpresa))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetEmpresa", new { id = empresa.IdEmpresa }, empresa);
         }
@@ -101,6 +99,10 @@ namespace RADER.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmpresa(int id)
         {
+            if (_context.Empresas == null)
+            {
+                return NotFound();
+            }
             var empresa = await _context.Empresas.FindAsync(id);
             if (empresa == null)
             {
@@ -115,7 +117,7 @@ namespace RADER.Controllers
 
         private bool EmpresaExists(int id)
         {
-            return _context.Empresas.Any(e => e.IdEmpresa == id);
+            return (_context.Empresas?.Any(e => e.IdEmpresa == id)).GetValueOrDefault();
         }
     }
 }

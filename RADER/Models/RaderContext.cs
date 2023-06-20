@@ -53,9 +53,7 @@ public partial class RaderContext : DbContext
 
             entity.ToTable("Archivo");
 
-            entity.Property(e => e.IdArchivo)
-                .ValueGeneratedNever()
-                .HasColumnName("Id_Archivo");
+            entity.Property(e => e.IdArchivo).HasColumnName("Id_Archivo");
             entity.Property(e => e.CapacidadA)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -76,6 +74,7 @@ public partial class RaderContext : DbContext
 
             entity.HasOne(d => d.PersonaANavigation).WithMany(p => p.Archivos)
                 .HasForeignKey(d => d.PersonaA)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Archivo_Persona");
         });
 
@@ -85,9 +84,7 @@ public partial class RaderContext : DbContext
 
             entity.ToTable("Componente");
 
-            entity.Property(e => e.IdComponente)
-                .ValueGeneratedNever()
-                .HasColumnName("Id_Componente");
+            entity.Property(e => e.IdComponente).HasColumnName("Id_Componente");
             entity.Property(e => e.AccionesC)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -110,6 +107,7 @@ public partial class RaderContext : DbContext
 
             entity.HasOne(d => d.DispositivoCNavigation).WithMany(p => p.Componentes)
                 .HasForeignKey(d => d.DispositivoC)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Componente_Dispositivo1");
         });
 
@@ -119,9 +117,7 @@ public partial class RaderContext : DbContext
 
             entity.ToTable("Dispositivo");
 
-            entity.Property(e => e.IdDispositivo)
-                .ValueGeneratedNever()
-                .HasColumnName("Id_Dispositivo");
+            entity.Property(e => e.IdDispositivo).HasColumnName("Id_Dispositivo");
             entity.Property(e => e.AltoD)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -146,6 +142,7 @@ public partial class RaderContext : DbContext
 
             entity.HasOne(d => d.EmpresaDNavigation).WithMany(p => p.Dispositivos)
                 .HasForeignKey(d => d.EmpresaD)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Dispositivo_Empresa1");
         });
 
@@ -155,9 +152,7 @@ public partial class RaderContext : DbContext
 
             entity.ToTable("Empresa");
 
-            entity.Property(e => e.IdEmpresa)
-                .ValueGeneratedNever()
-                .HasColumnName("Id_Empresa");
+            entity.Property(e => e.IdEmpresa).HasColumnName("Id_Empresa");
             entity.Property(e => e.DireccionE)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -185,6 +180,7 @@ public partial class RaderContext : DbContext
 
             entity.HasOne(d => d.PersonaENavigation).WithMany(p => p.Empresas)
                 .HasForeignKey(d => d.PersonaE)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Empresa_Persona");
         });
 
@@ -194,9 +190,7 @@ public partial class RaderContext : DbContext
 
             entity.ToTable("Encargado");
 
-            entity.Property(e => e.IdEncargado)
-                .ValueGeneratedNever()
-                .HasColumnName("Id_Encargado");
+            entity.Property(e => e.IdEncargado).HasColumnName("Id_Encargado");
             entity.Property(e => e.DescripcionE)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -213,6 +207,7 @@ public partial class RaderContext : DbContext
 
             entity.HasOne(d => d.PersonaEncNavigation).WithMany(p => p.Encargados)
                 .HasForeignKey(d => d.PersonaEnc)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Encargado_Persona");
         });
 
@@ -222,9 +217,7 @@ public partial class RaderContext : DbContext
 
             entity.ToTable("Historial");
 
-            entity.Property(e => e.IdHistorial)
-                .ValueGeneratedNever()
-                .HasColumnName("Id_Historial");
+            entity.Property(e => e.IdHistorial).HasColumnName("Id_Historial");
             entity.Property(e => e.ComponenteH).HasColumnName("Componente_H");
             entity.Property(e => e.FechaH)
                 .HasColumnType("date")
@@ -243,10 +236,12 @@ public partial class RaderContext : DbContext
 
             entity.HasOne(d => d.ComponenteHNavigation).WithMany(p => p.Historials)
                 .HasForeignKey(d => d.ComponenteH)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Historial_Componente");
 
             entity.HasOne(d => d.UsuarioHNavigation).WithMany(p => p.Historials)
                 .HasForeignKey(d => d.UsuarioH)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Historial_Usuario");
         });
 
@@ -256,9 +251,7 @@ public partial class RaderContext : DbContext
 
             entity.ToTable("Inventario");
 
-            entity.Property(e => e.IdInventario)
-                .ValueGeneratedNever()
-                .HasColumnName("Id_Inventario");
+            entity.Property(e => e.IdInventario).HasColumnName("Id_Inventario");
             entity.Property(e => e.CantidadI).HasColumnName("Cantidad_I");
             entity.Property(e => e.ComponenteI).HasColumnName("Componente_I");
             entity.Property(e => e.DescripcionI)
@@ -273,10 +266,12 @@ public partial class RaderContext : DbContext
 
             entity.HasOne(d => d.ComponenteINavigation).WithMany(p => p.Inventarios)
                 .HasForeignKey(d => d.ComponenteI)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Inventario_Componente");
 
             entity.HasOne(d => d.ProveedorINavigation).WithMany(p => p.Inventarios)
                 .HasForeignKey(d => d.ProveedorI)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Inventario_Proveedor");
         });
 
@@ -286,9 +281,7 @@ public partial class RaderContext : DbContext
 
             entity.ToTable("Mantenimiento");
 
-            entity.Property(e => e.IdMantenimiento)
-                .ValueGeneratedNever()
-                .HasColumnName("Id_Mantenimiento");
+            entity.Property(e => e.IdMantenimiento).HasColumnName("Id_Mantenimiento");
             entity.Property(e => e.DescripcionM)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -305,10 +298,12 @@ public partial class RaderContext : DbContext
 
             entity.HasOne(d => d.DispositivoMNavigation).WithMany(p => p.Mantenimientos)
                 .HasForeignKey(d => d.DispositivoM)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Mantenimiento_Dispositivo1");
 
             entity.HasOne(d => d.EncargadoMNavigation).WithMany(p => p.Mantenimientos)
                 .HasForeignKey(d => d.EncargadoM)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Mantenimiento_Encargado");
         });
 
@@ -353,9 +348,7 @@ public partial class RaderContext : DbContext
 
             entity.ToTable("Persona");
 
-            entity.Property(e => e.IdPersona)
-                .ValueGeneratedNever()
-                .HasColumnName("Id_Persona");
+            entity.Property(e => e.IdPersona).HasColumnName("Id_Persona");
             entity.Property(e => e.ApellidoP)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -384,9 +377,7 @@ public partial class RaderContext : DbContext
 
             entity.ToTable("Proveedor");
 
-            entity.Property(e => e.IdProveedor)
-                .ValueGeneratedNever()
-                .HasColumnName("Id_Proveedor");
+            entity.Property(e => e.IdProveedor).HasColumnName("Id_Proveedor");
             entity.Property(e => e.DireccionP)
                 .HasMaxLength(11)
                 .IsUnicode(false)
@@ -410,6 +401,7 @@ public partial class RaderContext : DbContext
 
             entity.HasOne(d => d.PersonaPNavigation).WithMany(p => p.Proveedors)
                 .HasForeignKey(d => d.PersonaP)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Proveedor_Persona");
         });
 
@@ -419,9 +411,7 @@ public partial class RaderContext : DbContext
 
             entity.ToTable("Solicitud");
 
-            entity.Property(e => e.IdSolicitud)
-                .ValueGeneratedNever()
-                .HasColumnName("Id_Solicitud");
+            entity.Property(e => e.IdSolicitud).HasColumnName("Id_Solicitud");
             entity.Property(e => e.DescripcionS)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -435,10 +425,12 @@ public partial class RaderContext : DbContext
 
             entity.HasOne(d => d.DispositivoSNavigation).WithMany(p => p.Solicituds)
                 .HasForeignKey(d => d.DispositivoS)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Solicitud_Dispositivo1");
 
             entity.HasOne(d => d.UsuarioSNavigation).WithMany(p => p.Solicituds)
                 .HasForeignKey(d => d.UsuarioS)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Solicitud_Usuario");
         });
 
@@ -448,9 +440,7 @@ public partial class RaderContext : DbContext
 
             entity.ToTable("Usuario");
 
-            entity.Property(e => e.IdUsuario)
-                .ValueGeneratedNever()
-                .HasColumnName("Id_Usuario");
+            entity.Property(e => e.IdUsuario).HasColumnName("Id_Usuario");
             entity.Property(e => e.ContraseñaU)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -467,6 +457,7 @@ public partial class RaderContext : DbContext
 
             entity.HasOne(d => d.PersonaUNavigation).WithMany(p => p.Usuarios)
                 .HasForeignKey(d => d.PersonaU)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Usuario_Persona");
         });
 

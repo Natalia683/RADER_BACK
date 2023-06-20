@@ -16,6 +16,7 @@
 
         public string? NombreC { get; set; }
 
-        public string? EstadoI { get; set; }
+       
+    
     }
 }

@@ -1,9 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RADER.Models;
 using RADER.ModelsViews;
 
-namespace RADER.Controllers
+namespace RADER.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -43,6 +48,10 @@ namespace RADER.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Solicitud>> GetSolicitud(int id)
         {
+          if (_context.Solicituds == null)
+          {
+              return NotFound();
+          }
             var solicitud = await _context.Solicituds.FindAsync(id);
 
             if (solicitud == null)
@@ -89,22 +98,12 @@ namespace RADER.Controllers
         [HttpPost]
         public async Task<ActionResult<Solicitud>> PostSolicitud(Solicitud solicitud)
         {
+          if (_context.Solicituds == null)
+          {
+              return Problem("Entity set 'RaderContext.Solicituds'  is null.");
+          }
             _context.Solicituds.Add(solicitud);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (SolicitudExists(solicitud.IdSolicitud))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetSolicitud", new { id = solicitud.IdSolicitud }, solicitud);
         }
@@ -113,6 +112,10 @@ namespace RADER.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSolicitud(int id)
         {
+            if (_context.Solicituds == null)
+            {
+                return NotFound();
+            }
             var solicitud = await _context.Solicituds.FindAsync(id);
             if (solicitud == null)
             {
@@ -127,7 +130,7 @@ namespace RADER.Controllers
 
         private bool SolicitudExists(int id)
         {
-            return _context.Solicituds.Any(e => e.IdSolicitud == id);
+            return (_context.Solicituds?.Any(e => e.IdSolicitud == id)).GetValueOrDefault();
         }
     }
 }

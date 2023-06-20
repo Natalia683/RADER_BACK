@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using RADER.Models;
 using RADER.ModelsViews;
 
-namespace RADER.Controllers
+namespace RADER.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -43,10 +43,15 @@ namespace RADER.Controllers
             return await query.ToListAsync();
         }
 
+
         // GET: api/Dispositivoes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Dispositivo>> GetDispositivo(int id)
         {
+          if (_context.Dispositivos == null)
+          {
+              return NotFound();
+          }
             var dispositivo = await _context.Dispositivos.FindAsync(id);
 
             if (dispositivo == null)
@@ -93,22 +98,12 @@ namespace RADER.Controllers
         [HttpPost]
         public async Task<ActionResult<Dispositivo>> PostDispositivo(Dispositivo dispositivo)
         {
+          if (_context.Dispositivos == null)
+          {
+              return Problem("Entity set 'RaderContext.Dispositivos'  is null.");
+          }
             _context.Dispositivos.Add(dispositivo);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (DispositivoExists(dispositivo.IdDispositivo))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetDispositivo", new { id = dispositivo.IdDispositivo }, dispositivo);
         }
@@ -117,6 +112,10 @@ namespace RADER.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDispositivo(int id)
         {
+            if (_context.Dispositivos == null)
+            {
+                return NotFound();
+            }
             var dispositivo = await _context.Dispositivos.FindAsync(id);
             if (dispositivo == null)
             {
@@ -131,7 +130,7 @@ namespace RADER.Controllers
 
         private bool DispositivoExists(int id)
         {
-            return _context.Dispositivos.Any(e => e.IdDispositivo == id);
+            return (_context.Dispositivos?.Any(e => e.IdDispositivo == id)).GetValueOrDefault();
         }
     }
 }

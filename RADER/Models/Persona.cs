@@ -17,6 +17,8 @@ public partial class Persona
 
     public string? CorreoP { get; set; }
 
+    public bool? Estado { get; set; }
+
     public virtual ICollection<Archivo> Archivos { get; } = new List<Archivo>();
 
     public virtual ICollection<Empresa> Empresas { get; } = new List<Empresa>();

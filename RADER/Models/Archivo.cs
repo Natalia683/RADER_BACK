@@ -17,5 +17,7 @@ public partial class Archivo
 
     public int? PersonaA { get; set; }
 
+    public bool? Estado { get; set; }
+
     public virtual Persona? PersonaANavigation { get; set; }
 }

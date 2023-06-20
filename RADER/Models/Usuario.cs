@@ -15,6 +15,8 @@ public partial class Usuario
 
     public string? RolU { get; set; }
 
+    public bool? Estado { get; set; }
+
     public virtual ICollection<Historial> Historials { get; } = new List<Historial>();
 
     public virtual Persona? PersonaUNavigation { get; set; }

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RADER.Models;
 
-namespace RADER.Controllers
+namespace RADER.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -24,6 +24,10 @@ namespace RADER.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Proveedor>>> GetProveedors()
         {
+          if (_context.Proveedors == null)
+          {
+              return NotFound();
+          }
             return await _context.Proveedors.ToListAsync();
         }
 
@@ -31,6 +35,10 @@ namespace RADER.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Proveedor>> GetProveedor(int id)
         {
+          if (_context.Proveedors == null)
+          {
+              return NotFound();
+          }
             var proveedor = await _context.Proveedors.FindAsync(id);
 
             if (proveedor == null)
@@ -77,22 +85,12 @@ namespace RADER.Controllers
         [HttpPost]
         public async Task<ActionResult<Proveedor>> PostProveedor(Proveedor proveedor)
         {
+          if (_context.Proveedors == null)
+          {
+              return Problem("Entity set 'RaderContext.Proveedors'  is null.");
+          }
             _context.Proveedors.Add(proveedor);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (ProveedorExists(proveedor.IdProveedor))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetProveedor", new { id = proveedor.IdProveedor }, proveedor);
         }
@@ -101,6 +99,10 @@ namespace RADER.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProveedor(int id)
         {
+            if (_context.Proveedors == null)
+            {
+                return NotFound();
+            }
             var proveedor = await _context.Proveedors.FindAsync(id);
             if (proveedor == null)
             {
@@ -115,7 +117,7 @@ namespace RADER.Controllers
 
         private bool ProveedorExists(int id)
         {
-            return _context.Proveedors.Any(e => e.IdProveedor == id);
+            return (_context.Proveedors?.Any(e => e.IdProveedor == id)).GetValueOrDefault();
         }
     }
 }

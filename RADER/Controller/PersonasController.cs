@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using RADER.Models;
 using RADER.ModelsViews;
 
-namespace RADER.Controllers
+namespace RADER.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -29,20 +29,23 @@ namespace RADER.Controllers
                         select new PersonaMV
                         {
                             IdPersona = per.IdPersona,
-                            NombreP = per.NombreP,     
+                            NombreP = per.NombreP,
                             ApellidoP = per.ApellidoP,
                             DireccionP = per.DireccionP,
-                            TelefonoP= per.TelefonoP,
-                            CorreoP= per.CorreoP,
+                            TelefonoP = per.TelefonoP,
+                            CorreoP = per.CorreoP,
 
-};
+                        };
             return await query.ToListAsync();
         }
-
         // GET: api/Personas/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Persona>> GetPersona(int id)
         {
+          if (_context.Personas == null)
+          {
+              return NotFound();
+          }
             var persona = await _context.Personas.FindAsync(id);
 
             if (persona == null)
@@ -89,22 +92,12 @@ namespace RADER.Controllers
         [HttpPost]
         public async Task<ActionResult<Persona>> PostPersona(Persona persona)
         {
+          if (_context.Personas == null)
+          {
+              return Problem("Entity set 'RaderContext.Personas'  is null.");
+          }
             _context.Personas.Add(persona);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (PersonaExists(persona.IdPersona))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetPersona", new { id = persona.IdPersona }, persona);
         }
@@ -113,6 +106,10 @@ namespace RADER.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePersona(int id)
         {
+            if (_context.Personas == null)
+            {
+                return NotFound();
+            }
             var persona = await _context.Personas.FindAsync(id);
             if (persona == null)
             {
@@ -127,7 +124,7 @@ namespace RADER.Controllers
 
         private bool PersonaExists(int id)
         {
-            return _context.Personas.Any(e => e.IdPersona == id);
+            return (_context.Personas?.Any(e => e.IdPersona == id)).GetValueOrDefault();
         }
     }
 }

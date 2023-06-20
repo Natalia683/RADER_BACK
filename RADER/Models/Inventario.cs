@@ -17,6 +17,8 @@ public partial class Inventario
 
     public string? EstadoI { get; set; }
 
+    public bool? Estado { get; set; }
+
     public virtual Componente? ComponenteINavigation { get; set; }
 
     public virtual Proveedor? ProveedorINavigation { get; set; }

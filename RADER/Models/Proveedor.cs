@@ -19,6 +19,8 @@ public partial class Proveedor
 
     public DateTime? FechaVinculacionP { get; set; }
 
+    public bool? Estado { get; set; }
+
     public virtual ICollection<Inventario> Inventarios { get; } = new List<Inventario>();
 
     public virtual Persona? PersonaPNavigation { get; set; }

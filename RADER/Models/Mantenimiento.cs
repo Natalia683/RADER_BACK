@@ -17,6 +17,8 @@ public partial class Mantenimiento
 
     public int? DispositivoM { get; set; }
 
+    public bool? Estado { get; set; }
+
     public virtual Dispositivo? DispositivoMNavigation { get; set; }
 
     public virtual Encargado? EncargadoMNavigation { get; set; }

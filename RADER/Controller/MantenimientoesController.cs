@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using RADER.Models;
 using RADER.ModelsViews;
 
-namespace RADER.Controllers
+namespace RADER.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -30,25 +30,25 @@ namespace RADER.Controllers
                         join enc in _context.Encargados on man.EncargadoM equals enc.IdEncargado
                         join dis in _context.Dispositivos on man.DispositivoM equals dis.IdDispositivo
                         select new MantenimientoMV
-                       {
-                         IdMantenimiento=man.IdMantenimiento,   
+                        {
+                            IdMantenimiento = man.IdMantenimiento,
 
-                         EstadoM=man.EstadoM,
+                            EstadoM = man.EstadoM,
 
-                         FechaRevisionM=man.FechaRevisionM,
+                            FechaRevisionM = man.FechaRevisionM,
 
-                         DescripcionM= man.DescripcionM,
+                            DescripcionM = man.DescripcionM,
 
-                         EncargadoM=enc.PersonaEnc,
+                            EncargadoM = enc.PersonaEnc,
 
-                         DispositivoM=dis.IdDispositivo,
+                            DispositivoM = dis.IdDispositivo,
 
-                         NombreD=dis.NombreD,
-
-
+                            NombreD = dis.NombreD,
 
 
-    }; 
+
+
+                        };
             return await query.ToListAsync();
         }
 
@@ -56,6 +56,10 @@ namespace RADER.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Mantenimiento>> GetMantenimiento(int id)
         {
+          if (_context.Mantenimientos == null)
+          {
+              return NotFound();
+          }
             var mantenimiento = await _context.Mantenimientos.FindAsync(id);
 
             if (mantenimiento == null)
@@ -102,22 +106,12 @@ namespace RADER.Controllers
         [HttpPost]
         public async Task<ActionResult<Mantenimiento>> PostMantenimiento(Mantenimiento mantenimiento)
         {
+          if (_context.Mantenimientos == null)
+          {
+              return Problem("Entity set 'RaderContext.Mantenimientos'  is null.");
+          }
             _context.Mantenimientos.Add(mantenimiento);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (MantenimientoExists(mantenimiento.IdMantenimiento))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetMantenimiento", new { id = mantenimiento.IdMantenimiento }, mantenimiento);
         }
@@ -126,6 +120,10 @@ namespace RADER.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMantenimiento(int id)
         {
+            if (_context.Mantenimientos == null)
+            {
+                return NotFound();
+            }
             var mantenimiento = await _context.Mantenimientos.FindAsync(id);
             if (mantenimiento == null)
             {
@@ -140,7 +138,7 @@ namespace RADER.Controllers
 
         private bool MantenimientoExists(int id)
         {
-            return _context.Mantenimientos.Any(e => e.IdMantenimiento == id);
+            return (_context.Mantenimientos?.Any(e => e.IdMantenimiento == id)).GetValueOrDefault();
         }
     }
 }

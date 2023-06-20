@@ -19,6 +19,8 @@ public partial class Dispositivo
 
     public int? EmpresaD { get; set; }
 
+    public bool? Estado { get; set; }
+
     public virtual ICollection<Componente> Componentes { get; } = new List<Componente>();
 
     public virtual Empresa? EmpresaDNavigation { get; set; }

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RADER.Models;
 
-namespace RADER.Controllers
+namespace RADER.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -24,6 +24,10 @@ namespace RADER.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Archivo>>> GetArchivos()
         {
+          if (_context.Archivos == null)
+          {
+              return NotFound();
+          }
             return await _context.Archivos.ToListAsync();
         }
 
@@ -31,6 +35,10 @@ namespace RADER.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Archivo>> GetArchivo(int id)
         {
+          if (_context.Archivos == null)
+          {
+              return NotFound();
+          }
             var archivo = await _context.Archivos.FindAsync(id);
 
             if (archivo == null)
@@ -77,22 +85,12 @@ namespace RADER.Controllers
         [HttpPost]
         public async Task<ActionResult<Archivo>> PostArchivo(Archivo archivo)
         {
+          if (_context.Archivos == null)
+          {
+              return Problem("Entity set 'RaderContext.Archivos'  is null.");
+          }
             _context.Archivos.Add(archivo);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (ArchivoExists(archivo.IdArchivo))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetArchivo", new { id = archivo.IdArchivo }, archivo);
         }
@@ -101,6 +99,10 @@ namespace RADER.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteArchivo(int id)
         {
+            if (_context.Archivos == null)
+            {
+                return NotFound();
+            }
             var archivo = await _context.Archivos.FindAsync(id);
             if (archivo == null)
             {
@@ -115,7 +117,7 @@ namespace RADER.Controllers
 
         private bool ArchivoExists(int id)
         {
-            return _context.Archivos.Any(e => e.IdArchivo == id);
+            return (_context.Archivos?.Any(e => e.IdArchivo == id)).GetValueOrDefault();
         }
     }
 }

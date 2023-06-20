@@ -15,6 +15,8 @@ public partial class Solicitud
 
     public int? DispositivoS { get; set; }
 
+    public bool? Estado { get; set; }
+
     public virtual Dispositivo? DispositivoSNavigation { get; set; }
 
     public virtual Usuario? UsuarioSNavigation { get; set; }

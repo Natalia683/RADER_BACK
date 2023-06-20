@@ -19,6 +19,8 @@ public partial class Historial
 
     public int? UsuarioH { get; set; }
 
+    public bool? Estado { get; set; }
+
     public virtual Componente? ComponenteHNavigation { get; set; }
 
     public virtual Usuario? UsuarioHNavigation { get; set; }
